@@ -1,6 +1,9 @@
 package br.com.maus.services;
 
+import br.com.maus.data.dto.PersonDTO;
 import br.com.maus.exception.ResourceNotFoundException;
+import static br.com.maus.mapper.ObjectMapper.parseListObjects;
+import static br.com.maus.mapper.ObjectMapper.parseObject;
 import br.com.maus.model.Person;
 import br.com.maus.repository.PersonRepository;
 import org.slf4j.Logger;
@@ -20,26 +23,30 @@ public class PersonService {
     @Autowired
     PersonRepository repository;
 
-    public Person findById(Long id) {
+    public PersonDTO findById(Long id) {
         logger.info("Finding person...");
 
-        return repository.findById(id)
+        var entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+
+        return parseObject(entity, PersonDTO.class);
     }
 
-    public List<Person> findAll() {
+    public List<PersonDTO> findAll() {
         logger.info("Finding all people...");
 
-        return repository.findAll();
+        return parseListObjects(repository.findAll(), PersonDTO.class);
     }
 
-    public Person create(Person person) {
+    public PersonDTO create(PersonDTO person) {
         logger.info("Creating person...");
 
-        return repository.save(person);
+        var entity = parseObject(person, Person.class);
+
+        return parseObject(repository.save(entity), PersonDTO.class);
     }
 
-    public Person update(Person person) {
+    public PersonDTO update(PersonDTO person) {
         logger.info("Updating person...");
 
         Person entity = repository.findById(person.getId())
@@ -50,7 +57,7 @@ public class PersonService {
         entity.setAddress(person.getAddress());
         entity.setGender(person.getGender());
 
-        return repository.save(entity);
+        return parseObject(repository.save(entity), PersonDTO.class);
     }
 
     public void delete(Long id) {
