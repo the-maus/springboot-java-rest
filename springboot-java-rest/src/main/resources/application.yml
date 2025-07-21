@@ -15,5 +15,9 @@ spring:
     open-in-view: false #spring.jpa.open-in-view
 logging:
   level:
-    #root: WARN #globally
-    br.com.maus: DEBUG #by package
+    root: INFO #globally
+    #br.com.maus: DEBUG #by package
+spring-doc:
+  paths-to-match: /api/**/v1/**
+  swagger-ui:
+    use-root-path: true
