@@ -1,4 +1,4 @@
-package br.com.maus.services;
+package br.com.maus.unittests.services;
 
 import br.com.maus.controllers.PersonController;
 import br.com.maus.data.dto.PersonDTO;

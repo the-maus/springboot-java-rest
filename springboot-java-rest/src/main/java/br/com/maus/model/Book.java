@@ -24,7 +24,7 @@ public class Book implements Serializable {
     @Temporal(TemporalType.DATE)
     private Date launchDate;
 
-    @Column(precision = 65, scale = 2)
+    @Column
     private Double price;
 
     @Column(columnDefinition = "LONGTEXT")

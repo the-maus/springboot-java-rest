@@ -2,7 +2,7 @@ package br.com.maus.controllers;
 
 import br.com.maus.controllers.docs.PersonControllerDocs;
 import br.com.maus.data.dto.PersonDTO;
-import br.com.maus.services.PersonService;
+import br.com.maus.unittests.services.PersonService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
