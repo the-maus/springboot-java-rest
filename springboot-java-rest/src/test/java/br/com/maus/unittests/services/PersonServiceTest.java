@@ -4,6 +4,7 @@ import br.com.maus.data.dto.PersonDTO;
 import br.com.maus.exception.RequiredObjectIsNullException;
 import br.com.maus.model.Person;
 import br.com.maus.repository.PersonRepository;
+import br.com.maus.services.PersonService;
 import br.com.maus.unittests.mapper.mocks.MockPerson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

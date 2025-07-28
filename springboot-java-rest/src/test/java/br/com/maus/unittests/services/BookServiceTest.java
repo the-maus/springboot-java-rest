@@ -4,6 +4,7 @@ import br.com.maus.data.dto.BookDTO;
 import br.com.maus.exception.RequiredObjectIsNullException;
 import br.com.maus.model.Book;
 import br.com.maus.repository.BookRepository;
+import br.com.maus.services.BookService;
 import br.com.maus.unittests.mapper.mocks.MockBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

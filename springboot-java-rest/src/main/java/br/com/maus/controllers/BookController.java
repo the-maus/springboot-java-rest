@@ -2,7 +2,7 @@ package br.com.maus.controllers;
 
 import br.com.maus.controllers.docs.BookControllerDocs;
 import br.com.maus.data.dto.BookDTO;
-import br.com.maus.unittests.services.BookService;
+import br.com.maus.services.BookService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

@@ -1,4 +1,4 @@
-package br.com.maus.unittests.services;
+package br.com.maus.services;
 
 import br.com.maus.controllers.BookController;
 import br.com.maus.data.dto.BookDTO;
