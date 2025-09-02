@@ -1,35 +1,27 @@
-package br.com.maus.model;
+package br.com.maus.integrationtests.dto;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-@Entity
-@Table(name = "books")
-public class Book implements Serializable {
+@XmlRootElement
+public class BookDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(columnDefinition = "LONGTEXT")
     private String author;
-
-    @Column(nullable = false, name = "launch_date")
-    @Temporal(TemporalType.DATE)
+    @JsonProperty("launch_date")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private Date launchDate;
-
-    @Column
     private Double price;
-
-    @Column(columnDefinition = "LONGTEXT")
     private String title;
 
-    public Book() {}
+    public BookDTO() {}
 
     public Long getId() {
         return id;
@@ -73,7 +65,8 @@ public class Book implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Book book)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+        BookDTO book = (BookDTO) o;
         return Objects.equals(getId(), book.getId()) && Objects.equals(getAuthor(), book.getAuthor()) && Objects.equals(getLaunchDate(), book.getLaunchDate()) && Objects.equals(getPrice(), book.getPrice()) && Objects.equals(getTitle(), book.getTitle());
     }
 

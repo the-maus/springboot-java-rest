@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
+@Relation(collectionRelation = "books")
 @JsonPropertyOrder({"id", "title", "author", "launch_date", "price"})
 public class BookDTO extends RepresentationModel<BookDTO> implements Serializable {
 
