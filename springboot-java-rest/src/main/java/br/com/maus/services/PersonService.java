@@ -6,6 +6,9 @@ import br.com.maus.exception.BadRequestException;
 import br.com.maus.exception.FileStorageException;
 import br.com.maus.exception.RequiredObjectIsNullException;
 import br.com.maus.exception.ResourceNotFoundException;
+import br.com.maus.file.exporter.MediaTypes;
+import br.com.maus.file.exporter.contract.FileExporter;
+import br.com.maus.file.exporter.factory.FileExporterFactory;
 import br.com.maus.file.importer.contract.FileImporter;
 import br.com.maus.file.importer.factory.FileImporterFactory;
 import br.com.maus.model.Person;
@@ -14,6 +17,7 @@ import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,6 +52,9 @@ public class PersonService {
     FileImporterFactory importer;
 
     @Autowired
+    FileExporterFactory exporter;
+
+    @Autowired
     PagedResourcesAssembler<PersonDTO> assembler;
 
     public PersonDTO findById(Long id) {
@@ -75,6 +82,19 @@ public class PersonService {
         var people = repository.findPeopleByName(firstName, pageable);
 
         return buildPagedModel(pageable, people);
+    }
+
+    public Resource exportPage(Pageable pageable, String acceptHeader) {
+        logger.info("Exporting a people page...");
+
+        var people = repository.findAll(pageable).map(person -> parseObject(person, PersonDTO.class)).getContent();
+        try {
+            FileExporter exporter = this.exporter.getExporter(acceptHeader);
+
+            return exporter.exportFile(people);
+        } catch (Exception e) {
+            throw new RuntimeException("Error during file export!", e);
+        }
     }
 
     public PersonDTO create(PersonDTO person) {
@@ -182,5 +202,6 @@ public class PersonService {
         dto.add(linkTo(methodOn(PersonController.class).update(dto)).withRel("update").withType("PUT"));
         dto.add(linkTo(methodOn(PersonController.class).disablePerson(dto.getId())).withRel("disable").withType("PATCH"));
         dto.add(linkTo(methodOn(PersonController.class).delete(dto.getId())).withRel("delete").withType("DELETE"));
+        dto.add(linkTo(methodOn(PersonController.class).exportPage(1, 12, "asc", null)).withRel("exportPage").withType("GET").withTitle("Export people"));
     }
 }
