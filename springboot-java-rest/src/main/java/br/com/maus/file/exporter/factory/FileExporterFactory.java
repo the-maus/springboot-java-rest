@@ -4,6 +4,7 @@ import br.com.maus.exception.BadRequestException;
 import br.com.maus.file.exporter.MediaTypes;
 import br.com.maus.file.exporter.contract.FileExporter;
 import br.com.maus.file.exporter.impl.CsvExporter;
+import br.com.maus.file.exporter.impl.PdfExporter;
 import br.com.maus.file.exporter.impl.XlsxExporter;
 import br.com.maus.file.importer.contract.FileImporter;
 import br.com.maus.file.importer.impl.CsvImporter;
@@ -27,6 +28,8 @@ public class FileExporterFactory {
             return context.getBean(XlsxExporter.class); // spring instantiates exporter class, no need for "new XlsxExporter()"
         } else if (acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_CSV_VALUE)) {
             return context.getBean(CsvExporter.class);
+        } else if (acceptHeader.equalsIgnoreCase(MediaTypes.APPLICATION_PDF_VALUE)) {
+            return context.getBean(PdfExporter.class);
         } else {
             throw new BadRequestException("Invalid file format!");
         }
