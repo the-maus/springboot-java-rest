@@ -6,8 +6,7 @@ import br.com.maus.exception.BadRequestException;
 import br.com.maus.exception.FileStorageException;
 import br.com.maus.exception.RequiredObjectIsNullException;
 import br.com.maus.exception.ResourceNotFoundException;
-import br.com.maus.file.exporter.MediaTypes;
-import br.com.maus.file.exporter.contract.FileExporter;
+import br.com.maus.file.exporter.contract.PersonExporter;
 import br.com.maus.file.exporter.factory.FileExporterFactory;
 import br.com.maus.file.importer.contract.FileImporter;
 import br.com.maus.file.importer.factory.FileImporterFactory;
@@ -18,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PagedResourcesAssembler;
@@ -29,13 +27,10 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static br.com.maus.mapper.ObjectMapper.parseListObjects;
 import static br.com.maus.mapper.ObjectMapper.parseObject;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -56,6 +51,21 @@ public class PersonService {
 
     @Autowired
     PagedResourcesAssembler<PersonDTO> assembler;
+
+    public Resource exportPerson(Long id, String acceptHeader) {
+        logger.info("Exporting data from a person...");
+
+        var person = repository.findById(id)
+                .map(entity -> parseObject(entity, PersonDTO.class))
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+
+        try {
+            PersonExporter exporter = this.exporter.getExporter(acceptHeader);
+            return exporter.exportPerson(person);
+        } catch (Exception e) {
+            throw new RuntimeException("Error during file export!", e);
+        }
+    }
 
     public PersonDTO findById(Long id) {
         logger.info("Finding person...");
@@ -89,9 +99,9 @@ public class PersonService {
 
         var people = repository.findAll(pageable).map(person -> parseObject(person, PersonDTO.class)).getContent();
         try {
-            FileExporter exporter = this.exporter.getExporter(acceptHeader);
+            PersonExporter exporter = this.exporter.getExporter(acceptHeader);
 
-            return exporter.exportFile(people);
+            return exporter.exportPeople(people);
         } catch (Exception e) {
             throw new RuntimeException("Error during file export!", e);
         }

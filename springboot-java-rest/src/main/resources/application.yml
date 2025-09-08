@@ -26,6 +26,7 @@ spring:
 logging:
   level:
     root: INFO #globally
+    #net.sf.jasperreports.engine.*: TRACE
     #br.com.maus: DEBUG #by package
 spring-doc:
   paths-to-match: /api/**/v1/**
