@@ -2,6 +2,11 @@ cors:
   originPatterns: http://localhost:8080,http://localhost:3000,https://www.google.com
 file:
   upload-dir: /web/java/upload-dir
+security:
+  jwt:
+    token:
+      secret-key: 53cr37
+      expire-length: 3600000
 email:
   subject: "Default Subject"
   message: "Default Message"

@@ -21,6 +21,7 @@
 		<commons.csv.version>1.12.0</commons.csv.version>
 		<jasperreports.version>7.0.1</jasperreports.version>
 		<zxing.version>3.5.3</zxing.version>
+		<javajwt.version>4.4.0</javajwt.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -34,6 +35,16 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+		<dependency>
+			<groupId>com.auth0</groupId>
+			<artifactId>java-jwt</artifactId>
+			<version>${javajwt.version}</version>
 		</dependency>
 
 		<dependency>
