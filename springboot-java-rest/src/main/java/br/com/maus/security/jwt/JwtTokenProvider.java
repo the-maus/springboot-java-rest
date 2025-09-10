@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -49,6 +50,20 @@ public class JwtTokenProvider {
         String refreshToken = getRefreshToken(username, roles, now);
 
         return new TokenDTO(username, true, now, validity, accessToken, refreshToken);
+    }
+
+    public TokenDTO refreshToken(String refreshToken) {
+        var token = "";
+
+        if (tokenContainsBearer(refreshToken)) token = refreshToken.substring("Bearer ".length());
+
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+
+        String username = decodedJWT.getSubject();
+        List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+
+        return createAccessToken(username, roles);
     }
 
     private String getRefreshToken(String username, List<String> roles, Date now) {
@@ -91,11 +106,13 @@ public class JwtTokenProvider {
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
 
-        if (StringUtils.isNotBlank(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring("Bearer ".length());
-        }
+        if (tokenContainsBearer(bearerToken)) return bearerToken.substring("Bearer ".length());
 
         return null;
+    }
+
+    private static boolean tokenContainsBearer(String refreshToken) {
+        return StringUtils.isNotBlank(refreshToken) && refreshToken.startsWith("Bearer ");
     }
 
     public boolean validateToken(String token) {
