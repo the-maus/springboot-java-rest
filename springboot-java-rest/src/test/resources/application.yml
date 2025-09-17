@@ -3,7 +3,7 @@ server:
 cors:
   originPatterns: http://localhost:8080,http://localhost:3000,https://www.google.com
 file:
-  upload-dir: /web/java/upload-dir
+  upload-dir: /home/runner/work/springboot-java-rest/UploadDir
 security:
   jwt:
     token:
