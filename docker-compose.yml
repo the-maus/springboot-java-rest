@@ -32,6 +32,18 @@ services:
       - db
     networks:
       - maus-network
+  portainer:
+    image: portainer/portainer-ce:latest
+    restart: always
+    ports:
+      - 9000:9000
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - maus-network
+volumes:
+  portainer_data:
 networks:
   maus-network:
     driver: bridge
