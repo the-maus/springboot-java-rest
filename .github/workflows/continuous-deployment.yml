@@ -48,7 +48,7 @@ jobs:
 
     - name: Deploy to Google Cloud Run
       run: |
-        google run deploy springboot-java-rest \
+        gcloud run deploy springboot-java-rest \
           --image ${{ secrets.REGISTRY_INFO }}/springboot-java-rest:latest \
           --region us-central1 \
           --platform managed \
