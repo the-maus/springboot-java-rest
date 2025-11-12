@@ -40,18 +40,27 @@ jobs:
 
     - name: Push to Google Cloud Artifact Registry
       run: |
-        docker tag ${{ secrets.DOCKER_USERNAME }}/springboot-java-rest:latest ${{ secrets.DOCKER_USERNAME }}/springboot-java-rest:${{ github.run_id }}
-
-        docker push ${{ secrets.DOCKER_USERNAME }}/springboot-java-rest:latest
-        docker push ${{ secrets.DOCKER_USERNAME }}/springboot-java-rest:${{ github.run_id }}
-
-    - name: Push to DockerHub Container Registry
-      run: |
         docker tag ${{ secrets.DOCKER_USERNAME }}/springboot-java-rest:latest ${{ secrets.REGISTRY_INFO }}/springboot-java-rest:latest
         docker tag ${{ secrets.DOCKER_USERNAME }}/springboot-java-rest:latest ${{ secrets.REGISTRY_INFO }}/springboot-java-rest:${{ github.run_id }}
         
         docker push ${{ secrets.REGISTRY_INFO }}/springboot-java-rest:latest
         docker push ${{ secrets.REGISTRY_INFO }}/springboot-java-rest:${{ github.run_id }}
+
+    - name: Deploy to Google Cloud Run
+      run: |
+        google run deploy springboot-java-rest \
+          --image ${{ secrets.REGISTRY_INFO }}/springboot-java-rest:latest \
+          --region us-central1 \
+          --platform managed \
+          --allow-unauthenticated
+
+    - name: Push to DockerHub Container Registry
+      run: |
+        docker tag ${{ secrets.DOCKER_USERNAME }}/springboot-java-rest:latest ${{ secrets.DOCKER_USERNAME }}/springboot-java-rest:${{ github.run_id }}
+
+        docker push ${{ secrets.DOCKER_USERNAME }}/springboot-java-rest:latest
+        docker push ${{ secrets.DOCKER_USERNAME }}/springboot-java-rest:${{ github.run_id }}
+    
 
   # - name: Configure AWS credentials
   #   uses: aws-actions/configure-aws-credentials@v4 # More information on this action can be found below in the 'AWS Credentials' section
