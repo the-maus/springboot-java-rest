@@ -17,9 +17,9 @@ spring:
     name: springboot-java-rest
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://maus-db-server.c4x0siiiaxul.us-east-1.rds.amazonaws.com/springboot_java_rest?useTimezone=true&serverTimezone=UTC
+    url: jdbc:mysql://136.111.146.214/springboot_java_rest?useTimezone=true&serverTimezone=UTC
     username: root
-    password: pkI&^gZ5Gd%AxL0F #for tests only
+    password: admin123 #for tests only
   jpa:
     hibernate:
       ddl-auto: none
