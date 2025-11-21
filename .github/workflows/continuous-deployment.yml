@@ -66,6 +66,7 @@ jobs:
     - name: Deploy to GKE
       run: |
         kubectl set image deployment/springboot-java-rest springboot-java-rest=${{ secrets.REGISTRY_INFO }}/springboot-java-rest:${{ github.run_id }}
+        kubectl rollout status deployment springboot-java-rest
         
 
 #    - name: Deploy to Google Cloud Run
