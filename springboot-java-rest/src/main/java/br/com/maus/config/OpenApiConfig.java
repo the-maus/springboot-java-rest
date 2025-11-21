@@ -18,7 +18,7 @@ public class OpenApiConfig {
     OpenAPI customOpenAPI() {
         return new OpenAPI()
             .info(new Info()
-                .title("Java Spring Boot REST API - v2 " + service.retrieveInstanceInfo())
+                .title("Java Spring Boot REST API - v3 " + service.retrieveInstanceInfo())
                 .version("v1")
                 .description("RESTful API from 0 with Java, Spring Boot, Kubernetes and Docker")
                 .termsOfService("https://spring.io/projects/spring-boot")
