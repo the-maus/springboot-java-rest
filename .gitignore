@@ -44,15 +44,15 @@ blog/bin/
 hs_err_pid*
 /.metadata/
 
-/client/node_modules
-/client/.pnp
+/node_modules
+/.pnp
 .pnp.js
 
 # testing
-/client/coverage
+/coverage
 
 # production
-/client/build
+/build
 
 # misc
 .DS_Store
