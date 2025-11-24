@@ -22,12 +22,12 @@ services:
     working_dir: /springboot-java-rest
     environment:
       TZ: America/Sao_Paulo
-      SPRING.DATASOURCE.URL: jdbc:mysql://136.111.146.214/springboot_java_rest?useTimezone=true&serverTimezone=UTC
+      SPRING.DATASOURCE.URL: jdbc:mysql://db:3306/springboot_java_rest?useTimezone=true&serverTimezone=UTC
       SPRING.DATASOURCE.USERNAME: root
       SPRING.DATASOURCE.PASSWORD: admin123
     command: mvn spring-boot:run
     ports:
-      - 8080:80
+      - 8080:8080
     depends_on:
       - db
     networks:
