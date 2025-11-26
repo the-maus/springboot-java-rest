@@ -12,7 +12,7 @@ export default function Routes() {
             <Switch>
                 <Route path='/' element={<Login/>}></Route>
                 <Route path='/books' element={<Books/>}></Route>
-                <Route path='/book/new' element={<NewBook/>}></Route>
+                <Route path='/book/new/:bookId' element={<NewBook/>}></Route>
             </Switch>
         </BrowserRouter>
     );

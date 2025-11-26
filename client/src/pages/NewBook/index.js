@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { useNavigate, Link } from "react-router-dom";
+import React, {useState, useEffect} from 'react';
+import { useNavigate, Link, useParams } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 
 import api from '../../services/api';
@@ -16,16 +16,52 @@ export default function NewBook(){
     const [price, setPrice] = useState('');
     const [title, setTitle] = useState('');
 
+    //param must have the same name as in routes.js
+    const {bookId} = useParams();
+
     const username = localStorage.getItem('username');
     const accessToken = localStorage.getItem('accessToken');
 
+    const headers = {
+        Authorization: `Bearer ${accessToken}`
+    };
+
     const navigate = useNavigate();
 
-    async function createNewBook(e) {
+    function formatDate(date, back=false) {
+        if (back) {
+            const [day, month, year] = date.split('/');
+            return `${year}-${month}-${day}`;
+        } else {
+            const [year, month, day] = date.split('-');
+            return `${day}/${month}/${year}`;
+        }
+    }
+
+    async function loadBook() {
+        try {
+            const response = await api.get(`/api/book/v1/${bookId}`, {headers: headers});
+
+            setId(response.data.id);
+            setTitle(response.data.title);
+            setAuthor(response.data.author);
+            setPrice(response.data.price);
+            setLaunchDate(formatDate(response.data.launch_date, true));
+        } catch (error) {
+            alert('Error while loading book! Try again!');
+            navigate('/books');
+        }
+    }
+
+    useEffect(() => {
+        if (bookId === '0') return;
+        else loadBook();
+    }, [bookId]); //monitoring any changes on bookId
+    
+    async function saveOrUpdate(e) {
         e.preventDefault();
 
-        const [year, month, day] = launchDate.split('-');
-        const launch_date = `${day}/${month}/${year}`;
+        const launch_date = formatDate(launchDate);
 
         const data = {
             title, 
@@ -34,12 +70,13 @@ export default function NewBook(){
             price
         };
 
-        const headers = {
-            Authorization: `Bearer ${accessToken}`
-        };
-
         try {
-            await api.post('api/book/v1', data, {headers: headers});
+            if (bookId === '0') {
+                await api.post('api/book/v1', data, {headers: headers});
+            } else {
+                data.id = id;
+                await api.put('api/book/v1', data, {headers: headers});
+            }
             navigate('/books');
         } catch (err) {
             alert('Error while creating book! Try again!')    
@@ -51,15 +88,15 @@ export default function NewBook(){
             <div className="content">
                 <section className="form">
                     <img src={logoImage} alt="Maus Logo" />
-                    <h1>Add New Book</h1>
-                    <p>Enter the book information and click on 'Add'</p>
+                    <h1>{bookId === '0' ? 'Add New' : 'Update'} Book</h1>
+                    <p>Enter the book information and click on <strong>{bookId === '0' ? 'Add' : 'Update'}</strong></p>
                     <Link className="back-link" to="/books">
                         <FiArrowLeft size={16} color="#4E56C0"/>
-                        Home
+                        Back to Books
                     </Link>
                 </section>
 
-                <form action="" onSubmit={createNewBook}>
+                <form action="" onSubmit={saveOrUpdate}>
                     <input 
                         placeholder="Title" 
                         value={title}
@@ -81,7 +118,7 @@ export default function NewBook(){
                         onChange={e => setPrice(e.target.value)}
                     />
 
-                    <button type="submit" className="button">Add</button>
+                    <button type="submit" className="button">{bookId === '0' ? 'Add' : 'Update'}</button>
                 </form>
             </div>
         </div>

@@ -10,6 +10,7 @@ import logoImage from '../../assets/logo.png'
 
 export default function Books() {
     const [books, setBooks] = useState([]);
+    const [page, setPage] = useState(1);
 
     const username = localStorage.getItem('username');
     const accessToken = localStorage.getItem('accessToken');
@@ -26,11 +27,22 @@ export default function Books() {
         direction: 'asc'
     };
 
-    function getBooks()
-    {
-        api.get('api/book/v1', {headers: headers, params: params}).then(response => {
-            setBooks(response.data._embedded.books)
-        })
+    async function fetchMoreBooks() {
+        var pageSize = params.size;
+
+        const response = await api.get('api/book/v1', {headers: headers, params: {page: page, size: pageSize, direction:'asc'}});
+        setBooks(books => [...books, ...response.data._embedded.books]); //appending to books
+        setPage(page + 1);
+    }
+
+    async function reloadCurrentPage() {
+        var pageSize = params.size;
+        setBooks([]);
+
+        for (let i = 1; i < page; i++) {
+            var result = await api.get('api/book/v1', {headers: headers, params: {page: i, size: pageSize, direction:'asc'}});
+            setBooks(books => [...books, ...result.data._embedded.books]); //appending to books
+        }
     }
 
     async function logout() {
@@ -42,20 +54,28 @@ export default function Books() {
         try {
             await api.delete(`api/book/v1/${id}`, {headers: headers});
 
-            getBooks();
+            reloadCurrentPage();
         } catch (err) {
             alert('Delete failed! Try again!');
         }
     }
 
-    useEffect(() => { getBooks()}, [])
+    async function editBook(id) {
+        try {
+            navigate(`/book/new/${id}`);
+        } catch (err) {
+            alert('Edit book failed! Try again!')
+        }
+    }
+
+    useEffect(() => { fetchMoreBooks()}, [])
 
     return (
         <div className="book-container">
             <header>
                 <img src={logoImage} alt="Maus Logo" />
                 <span>Welcome, <strong>{username.toUpperCase()}</strong>!</span>
-                <Link className="button" to="/book/new">Add New Book</Link>
+                <Link className="button" to="/book/new/0">Add New Book</Link>
                 <button onClick={logout} type="button">
                     <FiPower size={18} color="#4E56C0"/>
                 </button>               
@@ -73,9 +93,9 @@ export default function Books() {
                         <p>{Intl.NumberFormat('pt-BR', {style: 'currency', currency: 'BRL'}).format(book.price)}</p>
                         <strong>Release Date:</strong>
                         {/* already formatted on server but could use Intl.DateTimeFormat('pt-BR').format() otherwise */}
-                        <p>{book.launch_date} </p>
+                        <p>{book.launch_date}</p>
 
-                        <button type="button">
+                        <button onClick={() => editBook(book.id)} type="button">
                             <FiEdit size={20} color="#4E56C0"/>
                         </button>
 
@@ -85,6 +105,8 @@ export default function Books() {
                     </li>
                 ))}
             </ul>
+
+            <button className="button" onClick={() => fetchMoreBooks()} type="button">Load more</button>
         </div>
     );
 }
