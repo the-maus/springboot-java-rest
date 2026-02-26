@@ -23,7 +23,7 @@ public class AuthController implements AuthControllerDocs {
     @PostMapping("/signin")
     @Override
     public ResponseEntity<?> signIn(@RequestBody AccountCredentialsDTO credentials) {
-        if (credentialsIsInvalid(credentials)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid cliente request!");
+        if (credentialsIsInvalid(credentials)) return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Invalid client request!");
 
         var token = service.signIn(credentials);
 
